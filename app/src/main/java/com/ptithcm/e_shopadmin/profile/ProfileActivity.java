@@ -33,6 +33,7 @@ public class ProfileActivity extends AdminBaseActivity {
     private EditText edtCurrentPassword;
     private EditText edtNewPassword;
     private EditText edtConfirmPassword;
+    private Button btnProfileBack;
     private Button btnProfileRefresh;
     private Button btnSaveProfile;
     private Button btnChangePassword;
@@ -68,6 +69,7 @@ public class ProfileActivity extends AdminBaseActivity {
         edtCurrentPassword = findViewById(R.id.edtCurrentPassword);
         edtNewPassword = findViewById(R.id.edtNewPassword);
         edtConfirmPassword = findViewById(R.id.edtConfirmPassword);
+        btnProfileBack = findViewById(R.id.btnProfileBack);
         btnProfileRefresh = findViewById(R.id.btnProfileRefresh);
         btnSaveProfile = findViewById(R.id.btnSaveProfile);
         btnChangePassword = findViewById(R.id.btnChangePassword);
@@ -75,6 +77,13 @@ public class ProfileActivity extends AdminBaseActivity {
     }
 
     private void initListeners() {
+        btnProfileBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         btnProfileRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

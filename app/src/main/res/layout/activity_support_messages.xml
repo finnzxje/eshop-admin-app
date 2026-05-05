@@ -26,6 +26,13 @@
         android:textColor="@color/adminTextSecondary"
         android:textSize="14sp" />
 
+    <Button
+        android:id="@+id/btnSupportMessagesBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Back to Support List" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

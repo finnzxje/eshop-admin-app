@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/adminBackground"
-    android:gravity="center"
     android:orientation="vertical"
     android:padding="24dp">
 
@@ -11,9 +10,15 @@
         android:id="@+id/tvPlaceholderTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:text="Placeholder"
         android:textColor="@color/black"
         android:textSize="28sp"
         android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnPlaceholderBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="Back to Navigator" />
 </LinearLayout>

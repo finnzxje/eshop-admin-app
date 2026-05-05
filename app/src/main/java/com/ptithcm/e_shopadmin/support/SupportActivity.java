@@ -26,6 +26,7 @@ public class SupportActivity extends AdminBaseActivity {
     private static final int PAGE_SIZE = 20;
     private Spinner spSupportListType;
     private Spinner spSupportStatus;
+    private Button btnSupportBack;
     private Button btnSupportRefresh;
     private Button btnSupportPrevious;
     private Button btnSupportNext;
@@ -59,6 +60,7 @@ public class SupportActivity extends AdminBaseActivity {
     private void initViews() {
         spSupportListType = findViewById(R.id.spSupportListType);
         spSupportStatus = findViewById(R.id.spSupportStatus);
+        btnSupportBack = findViewById(R.id.btnSupportBack);
         btnSupportRefresh = findViewById(R.id.btnSupportRefresh);
         btnSupportPrevious = findViewById(R.id.btnSupportPrevious);
         btnSupportNext = findViewById(R.id.btnSupportNext);
@@ -87,6 +89,13 @@ public class SupportActivity extends AdminBaseActivity {
     }
 
     private void initListeners() {
+        btnSupportBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         btnSupportRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

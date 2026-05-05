@@ -33,6 +33,7 @@ public class DashboardActivity extends AdminBaseActivity {
     private TextView tvAverageOrderValue;
     private TextView tvConversionRate;
     private TextView tvRevenueEmpty;
+    private Button btnDashboardBack;
     private Button btnDashboardRefresh;
     private ListView lvRevenueTrend;
     private ArrayList<RevenueTrendItem> revenueTrendItems;
@@ -65,6 +66,7 @@ public class DashboardActivity extends AdminBaseActivity {
         tvAverageOrderValue = findViewById(R.id.tvAverageOrderValue);
         tvConversionRate = findViewById(R.id.tvConversionRate);
         tvRevenueEmpty = findViewById(R.id.tvRevenueEmpty);
+        btnDashboardBack = findViewById(R.id.btnDashboardBack);
         btnDashboardRefresh = findViewById(R.id.btnDashboardRefresh);
         lvRevenueTrend = findViewById(R.id.lvRevenueTrend);
     }
@@ -81,6 +83,13 @@ public class DashboardActivity extends AdminBaseActivity {
     }
 
     private void initListeners() {
+        btnDashboardBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         btnDashboardRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

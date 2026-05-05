@@ -13,30 +13,30 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvProfileTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:text="Profile"
+            android:textColor="@color/black"
+            android:textSize="26sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvProfileTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Profile"
-                android:textColor="@color/black"
-                android:textSize="26sp"
-                android:textStyle="bold" />
+        <Button
+            android:id="@+id/btnProfileBack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Back to Navigator" />
 
-            <Button
-                android:id="@+id/btnProfileRefresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/black"
-                android:text="Refresh"
-                android:textColor="@color/white" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/btnProfileRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:backgroundTint="@color/black"
+            android:text="Refresh"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/tvProfileState"

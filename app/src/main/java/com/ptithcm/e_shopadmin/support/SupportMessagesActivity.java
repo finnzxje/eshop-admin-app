@@ -34,6 +34,7 @@ public class SupportMessagesActivity extends AdminBaseActivity {
     private TextView tvSupportMessagesMeta;
     private TextView tvSupportMessagesState;
     private Spinner spConversationStatus;
+    private Button btnSupportMessagesBack;
     private Button btnSupportMessagesRefresh;
     private Button btnUpdateConversationStatus;
     private ListView lvSupportMessages;
@@ -80,6 +81,7 @@ public class SupportMessagesActivity extends AdminBaseActivity {
         tvSupportMessagesMeta = findViewById(R.id.tvSupportMessagesMeta);
         tvSupportMessagesState = findViewById(R.id.tvSupportMessagesState);
         spConversationStatus = findViewById(R.id.spConversationStatus);
+        btnSupportMessagesBack = findViewById(R.id.btnSupportMessagesBack);
         btnSupportMessagesRefresh = findViewById(R.id.btnSupportMessagesRefresh);
         btnUpdateConversationStatus = findViewById(R.id.btnUpdateConversationStatus);
         lvSupportMessages = findViewById(R.id.lvSupportMessages);
@@ -109,6 +111,13 @@ public class SupportMessagesActivity extends AdminBaseActivity {
     }
 
     private void initListeners() {
+        btnSupportMessagesBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         btnSupportMessagesRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

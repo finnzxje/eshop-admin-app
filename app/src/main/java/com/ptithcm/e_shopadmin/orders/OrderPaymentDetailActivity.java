@@ -47,6 +47,7 @@ public class OrderPaymentDetailActivity extends AdminBaseActivity {
     private TextView tvDetailError;
     private TextView tvDetailRawResponse;
     private TextView tvRelatedTransactions;
+    private Button btnOrderDetailBack;
     private Button btnOrderDetailRefresh;
     private String transactionId;
     private DateTimeFormatter dateFormatter;
@@ -95,10 +96,18 @@ public class OrderPaymentDetailActivity extends AdminBaseActivity {
         tvDetailError = findViewById(R.id.tvDetailError);
         tvDetailRawResponse = findViewById(R.id.tvDetailRawResponse);
         tvRelatedTransactions = findViewById(R.id.tvRelatedTransactions);
+        btnOrderDetailBack = findViewById(R.id.btnOrderDetailBack);
         btnOrderDetailRefresh = findViewById(R.id.btnOrderDetailRefresh);
     }
 
     private void initListeners() {
+        btnOrderDetailBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         btnOrderDetailRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -27,6 +27,7 @@ public class OrdersActivity extends AdminBaseActivity {
     private static final int PAGE_SIZE = 10;
     private Spinner spPaymentStatus;
     private EditText edtOrderNumberFilter;
+    private Button btnOrdersBack;
     private Button btnOrderSearch;
     private Button btnOrderRefresh;
     private Button btnOrderPrevious;
@@ -61,6 +62,7 @@ public class OrdersActivity extends AdminBaseActivity {
     private void initViews() {
         spPaymentStatus = findViewById(R.id.spPaymentStatus);
         edtOrderNumberFilter = findViewById(R.id.edtOrderNumberFilter);
+        btnOrdersBack = findViewById(R.id.btnOrdersBack);
         btnOrderSearch = findViewById(R.id.btnOrderSearch);
         btnOrderRefresh = findViewById(R.id.btnOrderRefresh);
         btnOrderPrevious = findViewById(R.id.btnOrderPrevious);
@@ -86,6 +88,13 @@ public class OrdersActivity extends AdminBaseActivity {
     }
 
     private void initListeners() {
+        btnOrdersBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         btnOrderSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

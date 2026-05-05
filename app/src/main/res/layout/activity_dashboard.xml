@@ -8,30 +8,14 @@
     android:padding="20dp"
     tools:context=".dashboard.DashboardActivity">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tvDashboardTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tvDashboardTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Dashboard"
-            android:textColor="@color/black"
-            android:textSize="26sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btnDashboardRefresh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/black"
-            android:text="Refresh"
-            android:textColor="@color/white" />
-    </LinearLayout>
+        android:text="Dashboard"
+        android:textColor="@color/black"
+        android:textSize="26sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvDashboardPeriod"
@@ -41,6 +25,22 @@
         android:text="Last 30 days"
         android:textColor="@color/adminTextSecondary"
         android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnDashboardBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="Back to Navigator" />
+
+    <Button
+        android:id="@+id/btnDashboardRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:backgroundTint="@color/black"
+        android:text="Refresh"
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/tvDashboardState"
