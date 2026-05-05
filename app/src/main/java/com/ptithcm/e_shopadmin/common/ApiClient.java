@@ -46,15 +46,30 @@ public class ApiClient {
     }
 
     public static ApiResponse postJson(String path, JSONObject body) throws Exception {
+        return postJson(path, body, null);
+    }
+
+    public static ApiResponse postJson(String path, JSONObject body, String token) throws Exception {
+        return sendJson("POST", path, body, token);
+    }
+
+    public static ApiResponse putJson(String path, JSONObject body, String token) throws Exception {
+        return sendJson("PUT", path, body, token);
+    }
+
+    private static ApiResponse sendJson(String method, String path, JSONObject body, String token) throws Exception {
         URL url = new URL(ApiConfig.BASE_URL + path);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         try {
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(method);
             connection.setConnectTimeout(CONNECT_TIMEOUT);
             connection.setReadTimeout(READ_TIMEOUT);
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
+            if (token != null && !token.trim().isEmpty()) {
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+            }
             connection.setDoOutput(true);
 
             OutputStream outputStream = connection.getOutputStream();

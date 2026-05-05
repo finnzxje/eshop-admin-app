@@ -24,6 +24,15 @@
         android:textColor="@color/adminTextSecondary"
         android:textSize="14sp" />
 
+    <Button
+        android:id="@+id/btnAddProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:backgroundTint="@color/black"
+        android:text="Add Product"
+        android:textColor="@color/white" />
+
     <EditText
         android:id="@+id/edtProductSearch"
         android:layout_width="match_parent"

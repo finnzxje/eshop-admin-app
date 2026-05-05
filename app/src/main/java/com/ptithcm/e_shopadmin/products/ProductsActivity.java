@@ -1,5 +1,6 @@
 package com.ptithcm.e_shopadmin.products;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 public class ProductsActivity extends AdminBaseActivity {
     private EditText edtProductSearch;
     private Spinner spProductStatus;
+    private Button btnAddProduct;
     private Button btnSearchProducts;
     private Button btnPreviousPage;
     private Button btnNextPage;
@@ -53,12 +55,20 @@ public class ProductsActivity extends AdminBaseActivity {
         setupStatusSpinner();
         setupProductList();
         initListeners();
-        loadProducts();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (productAdapter != null) {
+            loadProducts();
+        }
     }
 
     private void initViews() {
         edtProductSearch = findViewById(R.id.edtProductSearch);
         spProductStatus = findViewById(R.id.spProductStatus);
+        btnAddProduct = findViewById(R.id.btnAddProduct);
         btnSearchProducts = findViewById(R.id.btnSearchProducts);
         btnPreviousPage = findViewById(R.id.btnPreviousPage);
         btnNextPage = findViewById(R.id.btnNextPage);
@@ -81,6 +91,14 @@ public class ProductsActivity extends AdminBaseActivity {
     }
 
     private void initListeners() {
+        btnAddProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProductsActivity.this, ProductFormActivity.class);
+                startActivity(intent);
+            }
+        });
+
         spProductStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
@@ -132,7 +150,9 @@ public class ProductsActivity extends AdminBaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Product product = productList.get(position);
-                Toast.makeText(ProductsActivity.this, product.getName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ProductsActivity.this, ProductFormActivity.class);
+                intent.putExtra(ProductFormActivity.EXTRA_PRODUCT_ID, product.getId());
+                startActivity(intent);
             }
         });
     }
@@ -244,6 +264,7 @@ public class ProductsActivity extends AdminBaseActivity {
     }
 
     private void setLoading(boolean loading, String message) {
+        btnAddProduct.setEnabled(!loading);
         btnSearchProducts.setEnabled(!loading);
         btnPreviousPage.setEnabled(!loading && currentPage > 0);
         btnNextPage.setEnabled(!loading && currentPage + 1 < totalPages);

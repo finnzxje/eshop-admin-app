@@ -32,6 +32,9 @@
             android:name=".products.ProductsActivity"
             android:exported="false" />
         <activity
+            android:name=".products.ProductFormActivity"
+            android:exported="false" />
+        <activity
             android:name=".users.UsersActivity"
             android:exported="false" />
         <activity

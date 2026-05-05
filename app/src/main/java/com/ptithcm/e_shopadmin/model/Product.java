@@ -1,6 +1,9 @@
 package com.ptithcm.e_shopadmin.model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class Product {
     private String id;
@@ -14,7 +17,9 @@ public class Product {
     private String productType;
     private String createdAt;
     private String updatedAt;
+    private int categoryId;
     private String categoryName;
+    private ArrayList<String> tags = new ArrayList<>();
 
     public Product() {
     }
@@ -35,7 +40,28 @@ public class Product {
 
         JSONObject category = object.optJSONObject("category");
         if (category != null) {
+            product.setCategoryId(category.optInt("id", 0));
             product.setCategoryName(category.optString("name", ""));
+        }
+
+        JSONArray tagsArray = object.optJSONArray("tags");
+        if (tagsArray != null) {
+            ArrayList<String> parsedTags = new ArrayList<>();
+            for (int i = 0; i < tagsArray.length(); i++) {
+                Object value = tagsArray.opt(i);
+                if (value instanceof JSONObject) {
+                    String tag = ((JSONObject) value).optString("tag", "");
+                    if (!tag.trim().isEmpty()) {
+                        parsedTags.add(tag);
+                    }
+                } else if (value != null) {
+                    String tag = String.valueOf(value);
+                    if (!tag.trim().isEmpty()) {
+                        parsedTags.add(tag);
+                    }
+                }
+            }
+            product.setTags(parsedTags);
         }
 
         return product;
@@ -135,5 +161,21 @@ public class Product {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<String> tags) {
+        this.tags = tags;
     }
 }
