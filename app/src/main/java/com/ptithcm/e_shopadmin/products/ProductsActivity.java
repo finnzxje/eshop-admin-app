@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ptithcm.e_shopadmin.MainActivity;
 import com.ptithcm.e_shopadmin.R;
 import com.ptithcm.e_shopadmin.adapter.ProductAdapter;
 import com.ptithcm.e_shopadmin.common.AdminBaseActivity;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 public class ProductsActivity extends AdminBaseActivity {
     private EditText edtProductSearch;
     private Spinner spProductStatus;
+    private Button btnBackToNavigator;
     private Button btnAddProduct;
     private Button btnSearchProducts;
     private Button btnPreviousPage;
@@ -68,6 +70,7 @@ public class ProductsActivity extends AdminBaseActivity {
     private void initViews() {
         edtProductSearch = findViewById(R.id.edtProductSearch);
         spProductStatus = findViewById(R.id.spProductStatus);
+        btnBackToNavigator = findViewById(R.id.btnBackToNavigator);
         btnAddProduct = findViewById(R.id.btnAddProduct);
         btnSearchProducts = findViewById(R.id.btnSearchProducts);
         btnPreviousPage = findViewById(R.id.btnPreviousPage);
@@ -91,6 +94,16 @@ public class ProductsActivity extends AdminBaseActivity {
     }
 
     private void initListeners() {
+        btnBackToNavigator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProductsActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         btnAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -264,6 +277,7 @@ public class ProductsActivity extends AdminBaseActivity {
     }
 
     private void setLoading(boolean loading, String message) {
+        btnBackToNavigator.setEnabled(!loading);
         btnAddProduct.setEnabled(!loading);
         btnSearchProducts.setEnabled(!loading);
         btnPreviousPage.setEnabled(!loading && currentPage > 0);
