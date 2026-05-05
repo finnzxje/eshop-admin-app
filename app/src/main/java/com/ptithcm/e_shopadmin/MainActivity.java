@@ -49,6 +49,14 @@ public class MainActivity extends AppCompatActivity {
         initListeners();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sessionManager != null && tvAdminWelcome != null && sessionManager.hasValidAdminSession()) {
+            showAdminInfo();
+        }
+    }
+
     private void initViews() {
         tvAdminWelcome = findViewById(R.id.tvAdminWelcome);
         tvAdminRole = findViewById(R.id.tvAdminRole);

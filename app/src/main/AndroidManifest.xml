@@ -23,7 +23,13 @@
             android:name=".orders.OrdersActivity"
             android:exported="false" />
         <activity
+            android:name=".orders.OrderPaymentDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".support.SupportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".support.SupportMessagesActivity"
             android:exported="false" />
         <activity
             android:name=".profile.ProfileActivity"

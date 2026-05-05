@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/adminBackground"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".support.SupportMessagesActivity">
+
+    <TextView
+        android:id="@+id/tvSupportMessagesTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Conversation"
+        android:textColor="@color/black"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvSupportMessagesMeta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Customer: - | Status: -"
+        android:textColor="@color/adminTextSecondary"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSupportMessagesRefresh"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/black"
+            android:text="Refresh"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/btnUpdateConversationStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/black"
+            android:text="Update Status"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/spConversationStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/tvSupportMessagesState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Loading messages..."
+        android:textColor="@color/adminTextSecondary"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/lvSupportMessages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp"
+        tools:ignore="AdapterViewChildren" />
+
+    <LinearLayout
+        android:id="@+id/layoutSupportSend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edtSupportMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Enter message..."
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:textColor="@color/black"
+            android:textColorHint="@color/adminTextSecondary" />
+
+        <Button
+            android:id="@+id/btnSendSupportMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:backgroundTint="@color/black"
+            android:text="Send"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>
