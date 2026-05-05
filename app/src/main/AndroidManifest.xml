@@ -38,6 +38,9 @@
             android:name=".products.ProductVariantsActivity"
             android:exported="false" />
         <activity
+            android:name=".products.ProductMediaActivity"
+            android:exported="false" />
+        <activity
             android:name=".users.UsersActivity"
             android:exported="false" />
         <activity

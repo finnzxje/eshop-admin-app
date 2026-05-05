@@ -204,6 +204,16 @@
             android:visibility="gone" />
 
         <Button
+            android:id="@+id/btnManageMedia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/black"
+            android:text="Manage Product Media"
+            android:textColor="@color/white"
+            android:visibility="gone" />
+
+        <Button
             android:id="@+id/btnCancelProductForm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

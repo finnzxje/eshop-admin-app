@@ -61,6 +61,33 @@ public class ApiClient {
         return sendJson("PATCH", path, body, token);
     }
 
+    public static ApiResponse delete(String path, String token) throws Exception {
+        URL url = new URL(ApiConfig.BASE_URL + path);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        try {
+            connection.setRequestMethod("DELETE");
+            connection.setConnectTimeout(CONNECT_TIMEOUT);
+            connection.setReadTimeout(READ_TIMEOUT);
+            connection.setRequestProperty("Accept", "application/json");
+            if (token != null && !token.trim().isEmpty()) {
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+            }
+
+            int statusCode = connection.getResponseCode();
+            InputStream inputStream;
+            if (statusCode >= 200 && statusCode < 300) {
+                inputStream = connection.getInputStream();
+            } else {
+                inputStream = connection.getErrorStream();
+            }
+
+            return new ApiResponse(statusCode, readStream(inputStream));
+        } finally {
+            connection.disconnect();
+        }
+    }
+
     private static ApiResponse sendJson(String method, String path, JSONObject body, String token) throws Exception {
         URL url = new URL(ApiConfig.BASE_URL + path);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

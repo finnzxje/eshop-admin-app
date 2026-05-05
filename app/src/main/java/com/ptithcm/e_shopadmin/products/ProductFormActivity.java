@@ -41,6 +41,7 @@ public class ProductFormActivity extends AdminBaseActivity {
     private CheckBox chkProductFeatured;
     private Button btnSaveProduct;
     private Button btnManageVariants;
+    private Button btnManageMedia;
     private Button btnCancelProductForm;
 
     private ArrayList<Category> categoryList = new ArrayList<>();
@@ -83,6 +84,7 @@ public class ProductFormActivity extends AdminBaseActivity {
         chkProductFeatured = findViewById(R.id.chkProductFeatured);
         btnSaveProduct = findViewById(R.id.btnSaveProduct);
         btnManageVariants = findViewById(R.id.btnManageVariants);
+        btnManageMedia = findViewById(R.id.btnManageMedia);
         btnCancelProductForm = findViewById(R.id.btnCancelProductForm);
     }
 
@@ -129,6 +131,15 @@ public class ProductFormActivity extends AdminBaseActivity {
                 startActivity(intent);
             }
         });
+
+        btnManageMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProductFormActivity.this, ProductMediaActivity.class);
+                intent.putExtra(ProductMediaActivity.EXTRA_PRODUCT_ID, productId);
+                startActivity(intent);
+            }
+        });
     }
 
     private void showInitialState() {
@@ -136,10 +147,12 @@ public class ProductFormActivity extends AdminBaseActivity {
             tvProductFormTitle.setText("Edit Product");
             btnSaveProduct.setText("Save Changes");
             btnManageVariants.setVisibility(View.VISIBLE);
+            btnManageMedia.setVisibility(View.VISIBLE);
         } else {
             tvProductFormTitle.setText("Create Product");
             btnSaveProduct.setText("Create Product");
             btnManageVariants.setVisibility(View.GONE);
+            btnManageMedia.setVisibility(View.GONE);
             edtProductType.setText("tops");
         }
         spProductFormStatus.setSelection(0);
@@ -442,6 +455,7 @@ public class ProductFormActivity extends AdminBaseActivity {
     private void setLoading(boolean loading, String message) {
         btnSaveProduct.setEnabled(!loading);
         btnManageVariants.setEnabled(!loading);
+        btnManageMedia.setEnabled(!loading);
         btnCancelProductForm.setEnabled(!loading);
 
         if (loading) {
