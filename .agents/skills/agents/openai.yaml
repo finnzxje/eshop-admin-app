@@ -1,0 +1,4 @@
+interface:
+  display_name: "E-Shop Android Admin"
+  short_description: "Build the e-shop Android admin app in beginner Java/XML style."
+  default_prompt: "Use this skill when developing the Android Studio Java admin app for the current e-shop repo with full React admin parity and classroom-friendly Android patterns."
