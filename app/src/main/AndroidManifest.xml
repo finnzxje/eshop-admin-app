@@ -17,6 +17,24 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
+            android:name=".dashboard.DashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".orders.OrdersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".support.SupportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".profile.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".products.ProductsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".users.UsersActivity"
+            android:exported="false" />
+        <activity
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>

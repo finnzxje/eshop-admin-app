@@ -43,8 +43,23 @@ public class SessionManager {
     }
 
     public boolean hasAdminRole() {
-        String roles = getRolesText();
-        return roles.contains("ADMIN") || roles.contains("STAFF");
+        return hasRole("ADMIN") || hasRole("STAFF");
+    }
+
+    public boolean isAdmin() {
+        return hasRole("ADMIN");
+    }
+
+    public boolean hasRole(String expectedRole) {
+        String rolesText = getRolesText();
+        String[] roles = rolesText.split(",");
+        for (int i = 0; i < roles.length; i++) {
+            String role = normalizeRole(roles[i]);
+            if (expectedRole.equals(role)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getAccessToken() {
@@ -86,5 +101,17 @@ public class SessionManager {
             builder.append(roles.get(i));
         }
         return builder.toString();
+    }
+
+    private String normalizeRole(String role) {
+        if (role == null) {
+            return "";
+        }
+
+        String normalized = role.trim();
+        if (normalized.startsWith("ROLE_")) {
+            normalized = normalized.substring(5);
+        }
+        return normalized;
     }
 }

@@ -47,12 +47,24 @@ public class User {
 
     public boolean hasAdminAccess() {
         for (int i = 0; i < roles.size(); i++) {
-            String role = roles.get(i);
+            String role = normalizeRole(roles.get(i));
             if ("ADMIN".equals(role) || "STAFF".equals(role)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private String normalizeRole(String role) {
+        if (role == null) {
+            return "";
+        }
+
+        String normalized = role.trim();
+        if (normalized.startsWith("ROLE_")) {
+            normalized = normalized.substring(5);
+        }
+        return normalized;
     }
 
     public String getId() {
