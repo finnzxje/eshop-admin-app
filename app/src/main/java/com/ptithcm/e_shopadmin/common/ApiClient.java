@@ -125,45 +125,6 @@ public class ApiClient {
         }
     }
 
-    public static ApiResponse postJson(String path, JSONObject body, String accessToken) throws Exception {
-        return sendJson("POST", path, body, accessToken);
-    }
-
-    public static ApiResponse putJson(String path, JSONObject body, String accessToken) throws Exception {
-        return sendJson("PUT", path, body, accessToken);
-    }
-
-    public static ApiResponse patchJson(String path, JSONObject body, String accessToken) throws Exception {
-        return sendJson("PATCH", path, body, accessToken);
-    }
-
-    public static ApiResponse get(String path, String accessToken) throws Exception {
-        URL url = new URL(ApiConfig.BASE_URL + path);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        try {
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(CONNECT_TIMEOUT);
-            connection.setReadTimeout(READ_TIMEOUT);
-            connection.setRequestProperty("Accept", "application/json");
-            if (accessToken != null && !accessToken.trim().isEmpty()) {
-                connection.setRequestProperty("Authorization", "Bearer " + accessToken);
-            }
-
-            int statusCode = connection.getResponseCode();
-            InputStream inputStream;
-            if (statusCode >= 200 && statusCode < 300) {
-                inputStream = connection.getInputStream();
-            } else {
-                inputStream = connection.getErrorStream();
-            }
-
-            return new ApiResponse(statusCode, readStream(inputStream));
-        } finally {
-            connection.disconnect();
-        }
-    }
-
     public static ApiResponse getOrderPaymentList(String accessToken, String status, String orderNumber, int page, int size) throws Exception {
         String path = "/api/admin/payments/transactions?page=" + page + "&size=" + size + "&sort=createdAt,desc";
 
@@ -226,42 +187,6 @@ public class ApiClient {
 
     public static ApiResponse changePassword(String accessToken, JSONObject body) throws Exception {
         return patchJson("/api/account/profile/password", body, accessToken);
-    }
-
-    private static ApiResponse sendJson(String method, String path, JSONObject body, String accessToken) throws Exception {
-        URL url = new URL(ApiConfig.BASE_URL + path);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        try {
-            connection.setRequestMethod(method);
-            connection.setConnectTimeout(CONNECT_TIMEOUT);
-            connection.setReadTimeout(READ_TIMEOUT);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-            if (accessToken != null && !accessToken.trim().isEmpty()) {
-                connection.setRequestProperty("Authorization", "Bearer " + accessToken);
-            }
-            connection.setDoOutput(true);
-
-            OutputStream outputStream = connection.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-            writer.write(body.toString());
-            writer.flush();
-            writer.close();
-            outputStream.close();
-
-            int statusCode = connection.getResponseCode();
-            InputStream inputStream;
-            if (statusCode >= 200 && statusCode < 300) {
-                inputStream = connection.getInputStream();
-            } else {
-                inputStream = connection.getErrorStream();
-            }
-
-            return new ApiResponse(statusCode, readStream(inputStream));
-        } finally {
-            connection.disconnect();
-        }
     }
 
     private static String readStream(InputStream inputStream) throws Exception {
