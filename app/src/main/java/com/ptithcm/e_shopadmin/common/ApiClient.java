@@ -57,6 +57,10 @@ public class ApiClient {
         return sendJson("PUT", path, body, token);
     }
 
+    public static ApiResponse patchJson(String path, JSONObject body, String token) throws Exception {
+        return sendJson("PATCH", path, body, token);
+    }
+
     private static ApiResponse sendJson(String method, String path, JSONObject body, String token) throws Exception {
         URL url = new URL(ApiConfig.BASE_URL + path);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
