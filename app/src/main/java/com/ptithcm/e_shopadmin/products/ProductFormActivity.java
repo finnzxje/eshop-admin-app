@@ -1,5 +1,6 @@
 package com.ptithcm.e_shopadmin.products;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -39,6 +40,7 @@ public class ProductFormActivity extends AdminBaseActivity {
     private Spinner spProductGender;
     private CheckBox chkProductFeatured;
     private Button btnSaveProduct;
+    private Button btnManageVariants;
     private Button btnCancelProductForm;
 
     private ArrayList<Category> categoryList = new ArrayList<>();
@@ -80,6 +82,7 @@ public class ProductFormActivity extends AdminBaseActivity {
         spProductGender = findViewById(R.id.spProductGender);
         chkProductFeatured = findViewById(R.id.chkProductFeatured);
         btnSaveProduct = findViewById(R.id.btnSaveProduct);
+        btnManageVariants = findViewById(R.id.btnManageVariants);
         btnCancelProductForm = findViewById(R.id.btnCancelProductForm);
     }
 
@@ -117,15 +120,26 @@ public class ProductFormActivity extends AdminBaseActivity {
                 finish();
             }
         });
+
+        btnManageVariants.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProductFormActivity.this, ProductVariantsActivity.class);
+                intent.putExtra(ProductVariantsActivity.EXTRA_PRODUCT_ID, productId);
+                startActivity(intent);
+            }
+        });
     }
 
     private void showInitialState() {
         if (editMode) {
             tvProductFormTitle.setText("Edit Product");
             btnSaveProduct.setText("Save Changes");
+            btnManageVariants.setVisibility(View.VISIBLE);
         } else {
             tvProductFormTitle.setText("Create Product");
             btnSaveProduct.setText("Create Product");
+            btnManageVariants.setVisibility(View.GONE);
             edtProductType.setText("tops");
         }
         spProductFormStatus.setSelection(0);
@@ -427,6 +441,7 @@ public class ProductFormActivity extends AdminBaseActivity {
 
     private void setLoading(boolean loading, String message) {
         btnSaveProduct.setEnabled(!loading);
+        btnManageVariants.setEnabled(!loading);
         btnCancelProductForm.setEnabled(!loading);
 
         if (loading) {
