@@ -84,6 +84,14 @@ public class SessionManager {
         return sharedPreferences.getString(KEY_ROLES, "");
     }
 
+    public void updateProfileInfo(String email, String firstName, String lastName) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_FIRST_NAME, firstName);
+        editor.putString(KEY_LAST_NAME, lastName);
+        editor.apply();
+    }
+
     public void clearSession() {
         sharedPreferences.edit().clear().apply();
     }
