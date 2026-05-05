@@ -18,16 +18,89 @@ public class ApiClient {
     private ApiClient() {
     }
 
-    public static ApiResponse postJson(String path, JSONObject body) throws Exception {
+    public static ApiResponse get(String path, String token) throws Exception {
         URL url = new URL(ApiConfig.BASE_URL + path);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         try {
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(CONNECT_TIMEOUT);
+            connection.setReadTimeout(READ_TIMEOUT);
+            connection.setRequestProperty("Accept", "application/json");
+            if (token != null && !token.trim().isEmpty()) {
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+            }
+
+            int statusCode = connection.getResponseCode();
+            InputStream inputStream;
+            if (statusCode >= 200 && statusCode < 300) {
+                inputStream = connection.getInputStream();
+            } else {
+                inputStream = connection.getErrorStream();
+            }
+
+            return new ApiResponse(statusCode, readStream(inputStream));
+        } finally {
+            connection.disconnect();
+        }
+    }
+
+    public static ApiResponse postJson(String path, JSONObject body) throws Exception {
+        return postJson(path, body, null);
+    }
+
+    public static ApiResponse postJson(String path, JSONObject body, String token) throws Exception {
+        return sendJson("POST", path, body, token);
+    }
+
+    public static ApiResponse putJson(String path, JSONObject body, String token) throws Exception {
+        return sendJson("PUT", path, body, token);
+    }
+
+    public static ApiResponse patchJson(String path, JSONObject body, String token) throws Exception {
+        return sendJson("PATCH", path, body, token);
+    }
+
+    public static ApiResponse delete(String path, String token) throws Exception {
+        URL url = new URL(ApiConfig.BASE_URL + path);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        try {
+            connection.setRequestMethod("DELETE");
+            connection.setConnectTimeout(CONNECT_TIMEOUT);
+            connection.setReadTimeout(READ_TIMEOUT);
+            connection.setRequestProperty("Accept", "application/json");
+            if (token != null && !token.trim().isEmpty()) {
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+            }
+
+            int statusCode = connection.getResponseCode();
+            InputStream inputStream;
+            if (statusCode >= 200 && statusCode < 300) {
+                inputStream = connection.getInputStream();
+            } else {
+                inputStream = connection.getErrorStream();
+            }
+
+            return new ApiResponse(statusCode, readStream(inputStream));
+        } finally {
+            connection.disconnect();
+        }
+    }
+
+    private static ApiResponse sendJson(String method, String path, JSONObject body, String token) throws Exception {
+        URL url = new URL(ApiConfig.BASE_URL + path);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        try {
+            connection.setRequestMethod(method);
             connection.setConnectTimeout(CONNECT_TIMEOUT);
             connection.setReadTimeout(READ_TIMEOUT);
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
+            if (token != null && !token.trim().isEmpty()) {
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+            }
             connection.setDoOutput(true);
 
             OutputStream outputStream = connection.getOutputStream();

@@ -13,6 +13,8 @@ public class User {
     private String lastName;
     private boolean enabled;
     private String createdAt;
+    private String updatedAt;
+    private String emailVerifiedAt;
     private String token;
     private String refreshToken;
     private List<String> roles;
@@ -29,6 +31,8 @@ public class User {
         user.setLastName(object.optString("lastName", ""));
         user.setEnabled(object.optBoolean("enabled", false));
         user.setCreatedAt(object.optString("createdAt", ""));
+        user.setUpdatedAt(object.optString("updatedAt", ""));
+        user.setEmailVerifiedAt(object.optString("emailVerifiedAt", ""));
         user.setToken(object.optString("token", ""));
         user.setRefreshToken(object.optString("refreshToken", ""));
 
@@ -65,6 +69,29 @@ public class User {
             normalized = normalized.substring(5);
         }
         return normalized;
+    }
+
+    public String getFullName() {
+        String fullName = (firstName + " " + lastName).trim();
+        if (fullName.isEmpty()) {
+            return email;
+        }
+        return fullName;
+    }
+
+    public String getRolesText() {
+        if (roles == null || roles.isEmpty()) {
+            return "No roles";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < roles.size(); i++) {
+            if (i > 0) {
+                builder.append(", ");
+            }
+            builder.append(normalizeRole(roles.get(i)));
+        }
+        return builder.toString();
     }
 
     public String getId() {
@@ -113,6 +140,22 @@ public class User {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getEmailVerifiedAt() {
+        return emailVerifiedAt;
+    }
+
+    public void setEmailVerifiedAt(String emailVerifiedAt) {
+        this.emailVerifiedAt = emailVerifiedAt;
     }
 
     public String getToken() {

@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="adminBackground">#FFFFFFFF</color>
     <color name="adminTextSecondary">#666666</color>
+    <color name="adminDivider">#FFE0E0E0</color>
 </resources>

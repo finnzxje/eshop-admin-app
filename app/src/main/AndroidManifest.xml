@@ -32,7 +32,19 @@
             android:name=".products.ProductsActivity"
             android:exported="false" />
         <activity
+            android:name=".products.ProductFormActivity"
+            android:exported="false" />
+        <activity
+            android:name=".products.ProductVariantsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".products.ProductMediaActivity"
+            android:exported="false" />
+        <activity
             android:name=".users.UsersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".users.UserDetailActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
