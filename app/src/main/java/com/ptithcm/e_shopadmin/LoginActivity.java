@@ -32,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        ApiClient.init(this);
         sessionManager = new SessionManager(this);
         if (sessionManager.hasValidAdminSession()) {
             openAdminHome();

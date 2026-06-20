@@ -10,6 +10,7 @@ public class AdminBaseActivity extends AppCompatActivity {
     protected SessionManager sessionManager;
 
     protected boolean requireAdminSession() {
+        ApiClient.init(this);
         sessionManager = new SessionManager(this);
         if (!sessionManager.hasValidAdminSession()) {
             openLogin();

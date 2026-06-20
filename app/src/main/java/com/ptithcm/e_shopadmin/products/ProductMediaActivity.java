@@ -20,7 +20,6 @@ import com.ptithcm.e_shopadmin.R;
 import com.ptithcm.e_shopadmin.adapter.ProductImageAdapter;
 import com.ptithcm.e_shopadmin.common.AdminBaseActivity;
 import com.ptithcm.e_shopadmin.common.ApiClient;
-import com.ptithcm.e_shopadmin.common.ApiConfig;
 import com.ptithcm.e_shopadmin.common.ApiResponse;
 import com.ptithcm.e_shopadmin.model.Color;
 import com.ptithcm.e_shopadmin.model.ProductImage;
@@ -28,10 +27,6 @@ import com.ptithcm.e_shopadmin.model.ProductImage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class ProductMediaActivity extends AdminBaseActivity {
@@ -262,7 +257,8 @@ public class ProductMediaActivity extends AdminBaseActivity {
             @Override
             public void run() {
                 try {
-                    ApiResponse response = uploadMultipartImage(imageUri, fileName, altText, displayOrder, primary, colorId);
+                    ApiResponse response = ApiClient.uploadProductImage(sessionManager.getAccessToken(), productId,
+                            imageUri, fileName, altText, displayOrder, primary, colorId);
                     if (response.isSuccessful()) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -282,95 +278,6 @@ public class ProductMediaActivity extends AdminBaseActivity {
             }
         });
         thread.start();
-    }
-
-    private ApiResponse uploadMultipartImage(Uri imageUri,
-                                             String fileName,
-                                             String altText,
-                                             String displayOrder,
-                                             boolean primary,
-                                             int colorId) throws Exception {
-        String boundary = "AndroidBoundary" + System.currentTimeMillis();
-        URL url = new URL(ApiConfig.BASE_URL + "/api/admin/catalog/products/" + productId + "/images");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        try {
-            connection.setRequestMethod("POST");
-            connection.setConnectTimeout(15000);
-            connection.setReadTimeout(15000);
-            connection.setDoOutput(true);
-            connection.setRequestProperty("Authorization", "Bearer " + sessionManager.getAccessToken());
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-
-            DataOutputStream output = new DataOutputStream(connection.getOutputStream());
-            writeTextPart(output, boundary, "altText", altText);
-            writeTextPart(output, boundary, "displayOrder", displayOrder);
-            writeTextPart(output, boundary, "primary", String.valueOf(primary));
-            if (colorId > 0) {
-                writeTextPart(output, boundary, "colorId", String.valueOf(colorId));
-            }
-            writeFilePart(output, boundary, imageUri, fileName);
-            output.writeBytes("--" + boundary + "--\r\n");
-            output.flush();
-            output.close();
-
-            int statusCode = connection.getResponseCode();
-            InputStream inputStream;
-            if (statusCode >= 200 && statusCode < 300) {
-                inputStream = connection.getInputStream();
-            } else {
-                inputStream = connection.getErrorStream();
-            }
-
-            return new ApiResponse(statusCode, readStream(inputStream));
-        } finally {
-            connection.disconnect();
-        }
-    }
-
-    private void writeTextPart(DataOutputStream output, String boundary, String name, String value) throws Exception {
-        output.writeBytes("--" + boundary + "\r\n");
-        output.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"\r\n\r\n");
-        output.writeBytes(value == null ? "" : value);
-        output.writeBytes("\r\n");
-    }
-
-    private void writeFilePart(DataOutputStream output, String boundary, Uri imageUri, String fileName) throws Exception {
-        String contentType = getContentResolver().getType(imageUri);
-        if (contentType == null || contentType.trim().isEmpty()) {
-            contentType = "image/jpeg";
-        }
-
-        output.writeBytes("--" + boundary + "\r\n");
-        output.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + fileName + "\"\r\n");
-        output.writeBytes("Content-Type: " + contentType + "\r\n\r\n");
-
-        InputStream inputStream = getContentResolver().openInputStream(imageUri);
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        while (inputStream != null && (bytesRead = inputStream.read(buffer)) != -1) {
-            output.write(buffer, 0, bytesRead);
-        }
-        if (inputStream != null) {
-            inputStream.close();
-        }
-        output.writeBytes("\r\n");
-    }
-
-    private String readStream(InputStream inputStream) throws Exception {
-        if (inputStream == null) {
-            return "";
-        }
-
-        StringBuilder builder = new StringBuilder();
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            builder.append(new String(buffer, 0, bytesRead, "UTF-8"));
-        }
-        inputStream.close();
-        return builder.toString();
     }
 
     private void updateSelectedImage() {

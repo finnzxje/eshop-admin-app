@@ -1,49 +1,50 @@
 package com.ptithcm.e_shopadmin.common;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.net.Uri;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.RequestFuture;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.URLEncoder;
-import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class ApiClient {
-    private static final int CONNECT_TIMEOUT = 15000;
-    private static final int READ_TIMEOUT = 15000;
+    private static final int TIMEOUT_MS = 15000;
+    private static RequestQueue requestQueue;
+    private static Context appContext;
 
     private ApiClient() {
     }
 
-    public static ApiResponse get(String path, String token) throws Exception {
-        URL url = new URL(ApiConfig.BASE_URL + path);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        try {
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(CONNECT_TIMEOUT);
-            connection.setReadTimeout(READ_TIMEOUT);
-            connection.setRequestProperty("Accept", "application/json");
-            if (token != null && !token.trim().isEmpty()) {
-                connection.setRequestProperty("Authorization", "Bearer " + token);
-            }
-
-            int statusCode = connection.getResponseCode();
-            InputStream inputStream;
-            if (statusCode >= 200 && statusCode < 300) {
-                inputStream = connection.getInputStream();
-            } else {
-                inputStream = connection.getErrorStream();
-            }
-
-            return new ApiResponse(statusCode, readStream(inputStream));
-        } finally {
-            connection.disconnect();
+    public static synchronized void init(Context context) {
+        if (context == null) {
+            return;
         }
+        appContext = context.getApplicationContext();
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(appContext);
+        }
+    }
+
+    public static ApiResponse get(String path, String token) throws Exception {
+        return send(Request.Method.GET, path, null, token);
     }
 
     public static ApiResponse postJson(String path, JSONObject body) throws Exception {
@@ -51,78 +52,67 @@ public class ApiClient {
     }
 
     public static ApiResponse postJson(String path, JSONObject body, String token) throws Exception {
-        return sendJson("POST", path, body, token);
+        return send(Request.Method.POST, path, body, token);
     }
 
     public static ApiResponse putJson(String path, JSONObject body, String token) throws Exception {
-        return sendJson("PUT", path, body, token);
+        return send(Request.Method.PUT, path, body, token);
     }
 
     public static ApiResponse patchJson(String path, JSONObject body, String token) throws Exception {
-        return sendJson("PATCH", path, body, token);
+        return send(Request.Method.PATCH, path, body, token);
     }
 
     public static ApiResponse delete(String path, String token) throws Exception {
-        URL url = new URL(ApiConfig.BASE_URL + path);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        try {
-            connection.setRequestMethod("DELETE");
-            connection.setConnectTimeout(CONNECT_TIMEOUT);
-            connection.setReadTimeout(READ_TIMEOUT);
-            connection.setRequestProperty("Accept", "application/json");
-            if (token != null && !token.trim().isEmpty()) {
-                connection.setRequestProperty("Authorization", "Bearer " + token);
-            }
-
-            int statusCode = connection.getResponseCode();
-            InputStream inputStream;
-            if (statusCode >= 200 && statusCode < 300) {
-                inputStream = connection.getInputStream();
-            } else {
-                inputStream = connection.getErrorStream();
-            }
-
-            return new ApiResponse(statusCode, readStream(inputStream));
-        } finally {
-            connection.disconnect();
-        }
+        return send(Request.Method.DELETE, path, null, token);
     }
 
-    private static ApiResponse sendJson(String method, String path, JSONObject body, String token) throws Exception {
-        URL url = new URL(ApiConfig.BASE_URL + path);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        try {
-            connection.setRequestMethod(method);
-            connection.setConnectTimeout(CONNECT_TIMEOUT);
-            connection.setReadTimeout(READ_TIMEOUT);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Accept", "application/json");
-            if (token != null && !token.trim().isEmpty()) {
-                connection.setRequestProperty("Authorization", "Bearer " + token);
-            }
-            connection.setDoOutput(true);
-
-            OutputStream outputStream = connection.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-            writer.write(body.toString());
-            writer.flush();
-            writer.close();
-            outputStream.close();
-
-            int statusCode = connection.getResponseCode();
-            InputStream inputStream;
-            if (statusCode >= 200 && statusCode < 300) {
-                inputStream = connection.getInputStream();
-            } else {
-                inputStream = connection.getErrorStream();
-            }
-
-            return new ApiResponse(statusCode, readStream(inputStream));
-        } finally {
-            connection.disconnect();
+    private static ApiResponse send(int method, String path, JSONObject body, String token) throws Exception {
+        HashMap<String, String> headers = buildJsonHeaders(token);
+        byte[] requestBody = null;
+        if (body != null) {
+            requestBody = body.toString().getBytes("UTF-8");
         }
+
+        ApiRequest request = new ApiRequest(method, ApiConfig.BASE_URL + path, headers,
+                "application/json; charset=utf-8", requestBody);
+        return execute(request);
+    }
+
+    public static ApiResponse uploadProductImage(String token,
+                                                 String productId,
+                                                 Uri imageUri,
+                                                 String fileName,
+                                                 String altText,
+                                                 String displayOrder,
+                                                 boolean primary,
+                                                 int colorId) throws Exception {
+        ensureReady();
+
+        String boundary = "AndroidBoundary" + System.currentTimeMillis();
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(byteStream);
+        writeTextPart(output, boundary, "altText", altText);
+        writeTextPart(output, boundary, "displayOrder", displayOrder);
+        writeTextPart(output, boundary, "primary", String.valueOf(primary));
+        if (colorId > 0) {
+            writeTextPart(output, boundary, "colorId", String.valueOf(colorId));
+        }
+        writeFilePart(output, boundary, imageUri, fileName);
+        output.writeBytes("--" + boundary + "--\r\n");
+        output.flush();
+        output.close();
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Accept", "application/json");
+        if (token != null && !token.trim().isEmpty()) {
+            headers.put("Authorization", "Bearer " + token);
+        }
+
+        String path = "/api/admin/catalog/products/" + productId + "/images";
+        ApiRequest request = new ApiRequest(Request.Method.POST, ApiConfig.BASE_URL + path, headers,
+                "multipart/form-data; boundary=" + boundary, byteStream.toByteArray());
+        return execute(request);
     }
 
     public static ApiResponse getOrderPaymentList(String accessToken, String status, String orderNumber, int page, int size) throws Exception {
@@ -189,18 +179,143 @@ public class ApiClient {
         return patchJson("/api/account/profile/password", body, accessToken);
     }
 
-    private static String readStream(InputStream inputStream) throws Exception {
-        if (inputStream == null) {
-            return "";
+    private static ApiResponse execute(ApiRequest request) throws Exception {
+        ensureReady();
+        RequestFuture<ApiResponse> future = RequestFuture.newFuture();
+        request.setListener(future);
+        request.setErrorListener(future);
+        request.setRetryPolicy(new DefaultRetryPolicy(TIMEOUT_MS, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(request);
+
+        try {
+            return future.get();
+        } catch (ExecutionException ex) {
+            Throwable cause = ex.getCause();
+            if (cause instanceof VolleyError) {
+                VolleyError volleyError = (VolleyError) cause;
+                if (volleyError.networkResponse != null) {
+                    return buildResponse(volleyError.networkResponse);
+                }
+                if (volleyError.getCause() instanceof UnknownHostException) {
+                    throw (UnknownHostException) volleyError.getCause();
+                }
+                throw new Exception(volleyError);
+            }
+            throw ex;
+        }
+    }
+
+    private static void ensureReady() {
+        if (requestQueue == null) {
+            throw new IllegalStateException("ApiClient.init(context) must be called before API requests.");
+        }
+    }
+
+    private static HashMap<String, String> buildJsonHeaders(String token) {
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Accept", "application/json");
+        if (token != null && !token.trim().isEmpty()) {
+            headers.put("Authorization", "Bearer " + token);
+        }
+        return headers;
+    }
+
+    private static ApiResponse buildResponse(NetworkResponse response) {
+        String body = "";
+        if (response.data != null) {
+            try {
+                body = new String(response.data, "UTF-8");
+            } catch (Exception ex) {
+                body = new String(response.data);
+            }
+        }
+        return new ApiResponse(response.statusCode, body);
+    }
+
+    private static void writeTextPart(DataOutputStream output, String boundary, String name, String value) throws Exception {
+        output.writeBytes("--" + boundary + "\r\n");
+        output.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"\r\n\r\n");
+        output.writeBytes(value == null ? "" : value);
+        output.writeBytes("\r\n");
+    }
+
+    private static void writeFilePart(DataOutputStream output, String boundary, Uri imageUri, String fileName) throws Exception {
+        ContentResolver resolver = appContext.getContentResolver();
+        String contentType = resolver.getType(imageUri);
+        if (contentType == null || contentType.trim().isEmpty()) {
+            contentType = "image/jpeg";
         }
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-        StringBuilder builder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
+        output.writeBytes("--" + boundary + "\r\n");
+        output.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + fileName + "\"\r\n");
+        output.writeBytes("Content-Type: " + contentType + "\r\n\r\n");
+
+        InputStream inputStream = resolver.openInputStream(imageUri);
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+        while (inputStream != null && (bytesRead = inputStream.read(buffer)) != -1) {
+            output.write(buffer, 0, bytesRead);
         }
-        reader.close();
-        return builder.toString();
+        if (inputStream != null) {
+            inputStream.close();
+        }
+        output.writeBytes("\r\n");
+    }
+
+    private static class ApiRequest extends Request<ApiResponse> {
+        private final Map<String, String> headers;
+        private final String contentType;
+        private final byte[] body;
+        private Response.Listener<ApiResponse> listener;
+        private Response.ErrorListener errorListener;
+
+        ApiRequest(int method, String url, Map<String, String> headers, String contentType, byte[] body) {
+            super(method, url, null);
+            this.headers = headers;
+            this.contentType = contentType;
+            this.body = body;
+        }
+
+        void setListener(Response.Listener<ApiResponse> listener) {
+            this.listener = listener;
+        }
+
+        void setErrorListener(Response.ErrorListener errorListener) {
+            this.errorListener = errorListener;
+        }
+
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            return headers;
+        }
+
+        @Override
+        public String getBodyContentType() {
+            return contentType;
+        }
+
+        @Override
+        public byte[] getBody() throws AuthFailureError {
+            return body;
+        }
+
+        @Override
+        protected Response<ApiResponse> parseNetworkResponse(NetworkResponse response) {
+            return Response.success(buildResponse(response), null);
+        }
+
+        @Override
+        protected void deliverResponse(ApiResponse response) {
+            if (listener != null) {
+                listener.onResponse(response);
+            }
+        }
+
+        @Override
+        public void deliverError(VolleyError error) {
+            if (errorListener != null) {
+                errorListener.onErrorResponse(error);
+            }
+        }
     }
 }
