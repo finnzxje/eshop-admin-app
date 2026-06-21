@@ -6,5 +6,6 @@
     <mapping directory="$PROJECT_DIR$/ref-android/InternalExternalStorage" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/ref-android/LoginShareReference" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/ref-android/ViewPagerNNavigation" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/ref/e-shop" vcs="Git" />
   </component>
 </project>

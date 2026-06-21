@@ -15,6 +15,7 @@ public class Product {
     private boolean featured;
     private String gender;
     private String productType;
+    private String imageUrl;
     private String createdAt;
     private String updatedAt;
     private int categoryId;
@@ -35,6 +36,7 @@ public class Product {
         product.setFeatured(object.optBoolean("featured", false));
         product.setGender(object.optString("gender", ""));
         product.setProductType(object.optString("productType", ""));
+        product.setImageUrl(findImageUrl(object));
         product.setCreatedAt(object.optString("createdAt", ""));
         product.setUpdatedAt(object.optString("updatedAt", ""));
 
@@ -65,6 +67,46 @@ public class Product {
         }
 
         return product;
+    }
+
+    private static String findImageUrl(JSONObject object) {
+        String url = object.optString("primaryImageUrl", "");
+        if (url.trim().isEmpty()) {
+            url = object.optString("thumbnailUrl", "");
+        }
+        if (url.trim().isEmpty()) {
+            url = object.optString("imageUrl", "");
+        }
+        if (!url.trim().isEmpty()) {
+            return url;
+        }
+
+        JSONArray images = object.optJSONArray("images");
+        if (images == null || images.length() == 0) {
+            return "";
+        }
+
+        String firstImageUrl = "";
+        for (int i = 0; i < images.length(); i++) {
+            JSONObject imageObject = images.optJSONObject(i);
+            if (imageObject == null) {
+                continue;
+            }
+
+            String imageUrl = imageObject.optString("imageUrl", "");
+            if (imageUrl.trim().isEmpty()) {
+                continue;
+            }
+
+            if (firstImageUrl.trim().isEmpty()) {
+                firstImageUrl = imageUrl;
+            }
+            if (imageObject.optBoolean("primary", false)) {
+                return imageUrl;
+            }
+        }
+
+        return firstImageUrl;
     }
 
     public String getId() {
@@ -137,6 +179,14 @@ public class Product {
 
     public void setProductType(String productType) {
         this.productType = productType;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getCreatedAt() {

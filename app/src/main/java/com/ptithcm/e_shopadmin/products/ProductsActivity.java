@@ -182,6 +182,7 @@ public class ProductsActivity extends AdminBaseActivity {
 
                     if (response.isSuccessful()) {
                         parseProducts(response.getBody());
+                        loadProductImages();
                         showProducts();
                     } else if (response.getStatusCode() == 401) {
                         sessionManager.clearSession();
@@ -241,6 +242,26 @@ public class ProductsActivity extends AdminBaseActivity {
         currentPage = object.optInt("page", currentPage);
         if (totalPages < 1) {
             totalPages = 1;
+        }
+    }
+
+    private void loadProductImages() {
+        for (int i = 0; i < productList.size(); i++) {
+            Product product = productList.get(i);
+            if (product.getImageUrl() != null && !product.getImageUrl().trim().isEmpty()) {
+                continue;
+            }
+
+            try {
+                ApiResponse detailResponse = ApiClient.get("/api/admin/catalog/products/" + product.getId(),
+                        sessionManager.getAccessToken());
+                if (detailResponse.isSuccessful()) {
+                    Product detailProduct = Product.fromJson(new JSONObject(detailResponse.getBody()));
+                    product.setImageUrl(detailProduct.getImageUrl());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

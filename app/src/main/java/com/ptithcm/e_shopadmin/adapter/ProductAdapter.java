@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ptithcm.e_shopadmin.R;
 import com.ptithcm.e_shopadmin.model.Product;
 
@@ -43,6 +45,7 @@ public class ProductAdapter extends BaseAdapter {
             view = LayoutInflater.from(context).inflate(R.layout.row_product, null);
         }
 
+        ImageView imgProductThumbnail = view.findViewById(R.id.imgProductThumbnail);
         TextView tvProductName = view.findViewById(R.id.tvProductName);
         TextView tvProductSlug = view.findViewById(R.id.tvProductSlug);
         TextView tvProductStatus = view.findViewById(R.id.tvProductStatus);
@@ -57,8 +60,24 @@ public class ProductAdapter extends BaseAdapter {
         tvProductPrice.setText(String.format(Locale.US, "$%.2f", product.getBasePrice()));
         tvProductCategory.setText(formatCategory(product.getCategoryName()));
         tvProductUpdatedAt.setText(formatUpdatedAt(product.getUpdatedAt()));
+        loadProductImage(imgProductThumbnail, product.getImageUrl());
 
         return view;
+    }
+
+    private void loadProductImage(ImageView imageView, String imageUrl) {
+        if (imageUrl == null || imageUrl.trim().isEmpty()) {
+            Glide.with(context).clear(imageView);
+            imageView.setImageResource(R.drawable.ic_product_image_placeholder);
+            return;
+        }
+
+        Glide.with(context)
+                .load(imageUrl)
+                .centerCrop()
+                .placeholder(R.drawable.ic_product_image_placeholder)
+                .error(R.drawable.ic_product_image_placeholder)
+                .into(imageView);
     }
 
     private String formatStatus(String status) {

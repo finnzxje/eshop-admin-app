@@ -2,43 +2,60 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="12dp">
 
-    <TextView
-        android:id="@+id/tvImageTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Image"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+    <ImageView
+        android:id="@+id/imgProductImage"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:layout_marginEnd="12dp"
+        android:background="#E5E7EB"
+        android:contentDescription="Product image"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_product_image_placeholder" />
 
-    <TextView
-        android:id="@+id/tvImageUrl"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:singleLine="true"
-        android:text="Image URL"
-        android:textColor="@color/adminTextSecondary"
-        android:textSize="13sp" />
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvImageMeta"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:text="Meta"
-        android:textColor="@color/black"
-        android:textSize="13sp" />
+        <TextView
+            android:id="@+id/tvImageTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Image"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvImageColor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Color"
-        android:textColor="@color/adminTextSecondary"
-        android:textSize="12sp" />
+        <TextView
+            android:id="@+id/tvImageUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:singleLine="true"
+            android:text="Image URL"
+            android:textColor="@color/adminTextSecondary"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tvImageMeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Meta"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tvImageColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Color"
+            android:textColor="@color/adminTextSecondary"
+            android:textSize="12sp" />
+    </LinearLayout>
 </LinearLayout>
